@@ -1,0 +1,12 @@
+
+
+
+1 - Add UART header for debuging.
+2 - Add pcf2123 interrupt handling
+3 - Add data init function
+4 - Add data read via UART function
+5 - Add data read via SPI function
+6 - Add data init via SPI function
+7 - Add PCF2123 initialization function
+8 - Add IO init function
+9 - Add interrupt header
