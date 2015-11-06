@@ -40,30 +40,35 @@ static void put_char_to_udr(char data_byte)
    }
 
 }
-
+char* buff;
 void send_message_to_UDR(char * message, int integer)
 {
-   char* buff = (char*) malloc((sizeof(int)*8+1));
+   //char* buff = (char*) malloc((sizeof(int)*8+1));
    itoa(integer, buff,10);
    do
    {
-	  put_char_to_udr(*message);
+     put_char_to_udr(*message);
    }while(*++message);
    do
    {
-	  put_char_to_udr(*buff);
+     put_char_to_udr(*buff);
    }while(*++buff);
+  // free(buff);
    //Add commands to run cursor to new line or create new function for this
+   put_char_to_udr('\n');
+   put_char_to_udr('\r');
 }
 
 int main(void) {
-
+   buff = (char*) malloc((sizeof(int)*8+1));
    init_uart();
 
     while(1)
     {
        _delay_ms(1000);
        send_message_to_UDR("Data ", -45);
+       _delay_ms(1000);
+       send_message_to_UDR("New Data ", 250);
     }
     return 0;
 }
