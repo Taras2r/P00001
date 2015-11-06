@@ -4,9 +4,10 @@
  *  Created on: 2 лист. 2015
  *      Author: tko
  */
+#include <avr/io.h>
 #include "pcf2123.h"
 #include "SPI.h"
-#include <avr/interrupt.h>
+#include "UART.h"
 
 /**************READ**WRITE**MODES**DEFINITION****************************/
  #define R_W   	7//Must be set to 1 when register is read
@@ -217,22 +218,9 @@ int main (void)
 	rtc_ptr->time_data.months  		 = rtc_receive_data(months);
 	rtc_ptr->time_data.years  		+= rtc_receive_data(years);
 
+	send_message_to_UDR("Minutes ", rtc_ptr->time_data.minutes);
+	send_message_to_UDR("Hours ", rtc_ptr->time_data.hours);
+
 	PORTB |= 1;
 	return 0;
-}
-
-void send_message_to_UDR(char * message, int integer)
-{
-	char* buff = (char*) malloc((sizeof(int)*8+1));
-	itoa(integer, buff,10);
-	do
-	{
-		printf("%c",*message);//Function to put char to UDR should be here
-	}while(*++message);
-	//while(!*(++buff))
-	do
-	{
-		printf("%c", *buff);//Function to put char to UDR should be here
-	}while(*++buff);
-	//Add commands to run cursor to new line or create new function for this
 }
