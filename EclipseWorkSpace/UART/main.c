@@ -62,13 +62,15 @@ void send_message_to_UDR(char * message, int integer)
 int main(void) {
    buff = (char*) malloc((sizeof(int)*8+1));
    init_uart();
-
+   DDRB |= (1<<PB0);
     while(1)
     {
-       _delay_ms(1000);
-       send_message_to_UDR("Data ", -45);
-       _delay_ms(1000);
-       send_message_to_UDR("New Data ", 250);
+    	_delay_ms(1000);
+    	PORTB |= (1 << PB0);
+    	send_message_to_UDR("Data ", -45);
+    	PORTB &= ~(1 << PB0);
+    	_delay_ms(1000);
+    	send_message_to_UDR("New Data ", 250);
     }
     return 0;
 }
