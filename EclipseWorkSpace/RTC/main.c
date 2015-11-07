@@ -195,6 +195,10 @@ void rtc_set_alarm_time(unsigned char minute, unsigned char hour)
 int main (void)
 {
 	SPI_init();
+	rtc_ptr = &rtc;
+	init_uart( );
+	init_integer_buff( );
+
 
 	rtc_transmit_data(years, 0);// rtc_ptr->time_data->years should be set via LCD display to current year
 	rtc_transmit_data(minutes,  rtc_ptr->time_data.minutes);
@@ -218,9 +222,13 @@ int main (void)
 	rtc_ptr->time_data.months  		 = rtc_receive_data(months);
 	rtc_ptr->time_data.years  		+= rtc_receive_data(years);
 
-	send_message_to_UDR("Minutes ", rtc_ptr->time_data.minutes);
-	send_message_to_UDR("Hours ", rtc_ptr->time_data.hours);
+	rtc_ptr->time_data.minutes = 89;
+	rtc_ptr->time_data.hours = 18;
 
-	PORTB |= 1;
+	send_message_to_UDR("Minutes ", rtc_ptr->time_data.minutes, 16);
+	send_message_to_UDR("Hours ", rtc_ptr->time_data.hours, 16);
+
+	//PORTB |= 1;
+	while(1);
 	return 0;
 }
