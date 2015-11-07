@@ -59,18 +59,31 @@ void send_message_to_UDR(char * message, int integer)
    put_char_to_udr('\r');
 }
 
+void init_integer_buff(void)
+{
+		buff = (char*) malloc(sizeof(int)*8+1);
+		if(buff == NULL)
+		{
+			char* error_message = "Malloc err.\n\r";
+			do
+			{
+				put_char_to_udr(*error_message);
+			}while(*++error_message);
+		}
+}
+
 int main(void) {
-   buff = (char*) malloc((sizeof(int)*8+1));
-   init_uart();
-   DDRB |= (1<<PB0);
-    while(1)
-    {
-    	_delay_ms(1000);
-    	PORTB |= (1 << PB0);
-    	send_message_to_UDR("Data ", -45);
-    	PORTB &= ~(1 << PB0);
-    	_delay_ms(1000);
-    	send_message_to_UDR("New Data ", 250);
-    }
-    return 0;
+	init_uart();
+	init_integer_buff();
+	DDRB |= (1<<PB0);
+	while(buff !=NULL)
+	{
+		_delay_ms(1000);
+		PORTB |= (1 << PB0);
+		send_message_to_UDR("Data ", -45);
+		PORTB &= ~(1 << PB0);
+		_delay_ms(1000);
+		send_message_to_UDR("New Data ", 250);
+	}
+	return 0;
 }
