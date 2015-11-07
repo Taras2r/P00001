@@ -11,6 +11,8 @@
 
 #define BAUD 115200
 #include <util/setbaud.h>
+
+
 static void set_uart_baud(void)
 {
    UBRRH = UBRRH_VALUE;
@@ -76,7 +78,7 @@ int main(void) {
 	init_uart();
 	init_integer_buff();
 	DDRB |= (1<<PB0);
-	while(buff !=NULL)
+	while(buff != NULL)
 	{
 		_delay_ms(1000);
 		PORTB |= (1 << PB0);
@@ -84,6 +86,8 @@ int main(void) {
 		PORTB &= ~(1 << PB0);
 		_delay_ms(1000);
 		send_message_to_UDR("New Data ", 250);
+		;
+		;
 	}
 	return 0;
 }
