@@ -72,8 +72,8 @@ void init_integer_buff(char * buff)
 }
 
 int main(void) {
-	init_uart(&buff);
-	init_integer_buff();
+	init_uart();
+	init_integer_buff(&buff);
 	DDRB |= (1<<PB0);
 	while(buff != NULL)
 	{
