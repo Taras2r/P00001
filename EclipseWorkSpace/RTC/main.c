@@ -58,14 +58,48 @@ typedef enum
 	timer_clkout = 0x1E,
 	countdown_timer = 0x1F,
 } REG_TYPE;
-/********************COMMAND**DEFINITION**************************/
+
+typedef enum
+{
+	CTD0,
+	CTD1,
+	TE = 3,
+	COF0,
+	COF1,
+	COF2
+}TIMER_CLKOUT_REG;
+
+typedef enum
+{
+	AE_M = 7,
+}MINUTE_ALARM_REG;
+
+typedef enum
+{
+	AE_H = 7,
+	AMPM = 5,
+}HOUR_ALARM_REG;
+
+typedef enum
+{
+	AE_D = 7,
+}DAY_ALARM_REG;
+
+typedef enum
+{
+	AE_W = 7,
+}WEEKDAY_ALARM_REG;
+/********************COMMANDS**DEFINITION**************************/
 
 #define RESET_RTC 				 0x1058
 #define ENABLE_INTERRUPT_SECONDS ((unsigned int)(control_2 << 8) | 1 << SI)
 #define ENABLE_INTERRUPT_MINUTES ((unsigned int)(control_2 << 8) | 1 << MI)
-#define DISABLE_INTERRUPTS_ALL ((unsigned int)(control_2 << 8))
-#define CLEAR_INT_FLAG
-#define SET_OFFSET
+#define DISABLE_TIME_INTERRUPTS ((unsigned int)(control_2 << 8))
+#define ENABLE_MINUTE_ALARM ((unsigned int)(timer_clkout << 8) | 1 << AE_M)
+#define ENABLE_HOUR_ALARM ((unsigned int)(timer_clkout << 8) | 1 << AE_H | 1 << AE_M)
+#define ENABLE_DAY_ALARM ((unsigned int)(timer_clkout << 8) | 1 << AE_D | 1 << AE_H | 1 << AE_M)
+#define ENABLE_WEEKDAY_ALARM ((unsigned int)(timer_clkout << 8) | 1 << AE_W | 1 << AE_D | 1 << AE_H | 1 << AE_M)
+#define DISABLE_ALL_ALARM ((unsigned int)(timer_clkout << 8))
 /************************************************************/
 
 
