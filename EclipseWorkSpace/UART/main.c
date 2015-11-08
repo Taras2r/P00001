@@ -45,7 +45,6 @@ static void put_char_to_udr(char data_byte)
 char* buff;
 void send_message_to_UDR(char * message, int integer)
 {
-   //char* buff = (char*) malloc((sizeof(int)*8+1));
    itoa(integer, buff,10);
    do
    {
@@ -55,13 +54,11 @@ void send_message_to_UDR(char * message, int integer)
    {
      put_char_to_udr(*buff);
    }while(*++buff);
-  // free(buff);
-   //Add commands to run cursor to new line or create new function for this
    put_char_to_udr('\n');
    put_char_to_udr('\r');
 }
 
-void init_integer_buff(void)
+void init_integer_buff(char * buff)
 {
 		buff = (char*) malloc(sizeof(int)*8+1);
 		if(buff == NULL)
@@ -75,7 +72,7 @@ void init_integer_buff(void)
 }
 
 int main(void) {
-	init_uart();
+	init_uart(&buff);
 	init_integer_buff();
 	DDRB |= (1<<PB0);
 	while(buff != NULL)

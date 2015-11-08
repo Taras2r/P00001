@@ -26,6 +26,7 @@ static inline void init_uart(void)__attribute__((always_inline));
 static inline void put_char_to_udr(char data_byte)__attribute__((always_inline));
 static inline init_integer_buff(void)__attribute__((always_inline));
 void send_message_to_UDR(char * message, int integer);
-
+;
+;
 
 #endif /* UART_H_ */
