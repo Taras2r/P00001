@@ -1,24 +1,39 @@
 /*
  * UART.h
  *
+<<<<<<< HEAD
  *  Created on: 6 лист. 2015
  *      Author: tko
+=======
+ *  Created on: Nov 7, 2015
+ *      Author: Taras
+>>>>>>> fetch_head
  */
 
 #ifndef UART_H_
 #define UART_H_
 
-#ifndef _STDIO_H_
-	#include<avr/io.h>
+
+#ifndef _AVR_IO_H_
+	#include <avr/io.h>
 #endif
 
 #ifndef _STDLIB_H_
-#include <stdlib.h>
+	#include <stdlib.h>
 #endif
-
 
 #define BAUD 115200
 #include <util/setbaud.h>
+
+
+char* buff;
+static inline void set_uart_baud(void)__attribute__((always_inline));
+static inline void init_uart(void)__attribute__((always_inline));
+static inline void put_char_to_udr(char data_byte)__attribute__((always_inline));
+static inline void init_integer_buff(void)__attribute__((always_inline));
+void send_message_to_UDR(char * message, int integer, char integer_format);
+
+
 static void set_uart_baud(void)
 {
    UBRRH = UBRRH_VALUE;
@@ -49,22 +64,32 @@ static void put_char_to_udr(char data_byte)
 
 }
 
-void send_message_to_UDR(char * message, int integer)
+void init_integer_buff(void)
 {
-   char* buff = (char*) malloc((sizeof(int)*8+1));
-   itoa(integer, buff,10);
+		buff = (char*) malloc(sizeof(int)*8+1);
+		if(buff == NULL)
+		{
+			char* error_message = "Malloc err.\n\r";
+			do
+			{
+				put_char_to_udr(*error_message);
+			}while(*++error_message);
+		}
+}
+
+void send_message_to_UDR(char * message, int integer, char integer_format)
+{
+   itoa(integer, buff, integer_format);
    do
    {
-	  put_char_to_udr(*message);
+     put_char_to_udr(*message);
    }while(*++message);
    do
    {
-	  put_char_to_udr(*buff);
+     put_char_to_udr(*buff);
    }while(*++buff);
-
    put_char_to_udr('\n');
    put_char_to_udr('\r');
-   //Add commands to run cursor to new line or create new function for this
 }
 
 #endif /* UART_H_ */

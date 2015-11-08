@@ -11,6 +11,8 @@
 
 #define BAUD 115200
 #include <util/setbaud.h>
+
+
 static void set_uart_baud(void)
 {
    UBRRH = UBRRH_VALUE;
@@ -40,30 +42,49 @@ static void put_char_to_udr(char data_byte)
    }
 
 }
-
+char* buff;
 void send_message_to_UDR(char * message, int integer)
 {
-   char* buff = (char*) malloc((sizeof(int)*8+1));
    itoa(integer, buff,10);
    do
    {
-	  put_char_to_udr(*message);
+     put_char_to_udr(*message);
    }while(*++message);
    do
    {
-	  put_char_to_udr(*buff);
+     put_char_to_udr(*buff);
    }while(*++buff);
-   //Add commands to run cursor to new line or create new function for this
+   put_char_to_udr('\n');
+   put_char_to_udr('\r');
+}
+
+void init_integer_buff(void)
+{
+		buff = (char*) malloc(sizeof(int)*8+1);
+		if(buff == NULL)
+		{
+			char* error_message = "Malloc err.\n\r";
+			do
+			{
+				put_char_to_udr(*error_message);
+			}while(*++error_message);
+		}
 }
 
 int main(void) {
-
-   init_uart();
-
-    while(1)
-    {
-       _delay_ms(1000);
-       send_message_to_UDR("Data ", -45);
-    }
-    return 0;
+	init_uart( );
+	init_integer_buff();
+	DDRB |= (1<<PB0);
+	while(buff != NULL)
+	{
+		_delay_ms(1000);
+		PORTB |= (1 << PB0);
+		send_message_to_UDR("Data ", -45);
+		PORTB &= ~(1 << PB0);
+		_delay_ms(1000);
+		send_message_to_UDR("New Data ", 250);
+		;
+		;
+	}
+	return 0;
 }
