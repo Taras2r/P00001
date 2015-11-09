@@ -1,12 +1,18 @@
 /*
  * UART.h
  *
+<<<<<<< HEAD
+ *  Created on: 6 лист. 2015
+ *      Author: tko
+=======
  *  Created on: Nov 7, 2015
  *      Author: Taras
+>>>>>>> fetch_head
  */
 
 #ifndef UART_H_
 #define UART_H_
+
 
 #ifndef _AVR_IO_H_
 	#include <avr/io.h>
@@ -26,6 +32,7 @@ static inline void init_uart(void)__attribute__((always_inline));
 static inline void put_char_to_udr(char data_byte)__attribute__((always_inline));
 static inline void init_integer_buff(void)__attribute__((always_inline));
 void send_message_to_UDR(char * message, int integer, char integer_format);
+
 
 static void set_uart_baud(void)
 {
