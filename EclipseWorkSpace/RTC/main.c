@@ -224,6 +224,13 @@ void rtc_set_alarm_time(unsigned char minute, unsigned char hour)
 	;
 }
 
+rtc_configure_alarms(unsigned char alarm_intr_flags)
+{
+	rtc_transmit_data(minute_alarm, ((alarm_intr_flags & (1 << AE_M)) | rtc_ptr->alarm_data.minute));
+	rtc_transmit_data(hour_alarm, ((alarm_intr_flags & (1 << AE_H)) | rtc_ptr->alarm_data.hour));
+	rtc_transmit_data(day_alarm, ((alarm_intr_flags & (1 << AE_D)) | rtc_ptr->alarm_data.day));
+	rtc_transmit_data(weekday_alarm, ((alarm_intr_flags & (1 << AE_W)) | rtc_ptr->alarm_data.weekday));
+}
 // add external interrupt that will initiate data receiving
 
 int main (void)
@@ -244,6 +251,7 @@ int main (void)
 	rtc_transmit_data(day_alarm, 	 rtc_ptr->alarm_data.day);
 	rtc_transmit_data(weekday_alarm, rtc_ptr->alarm_data.weekday);
 	rtc_transmit_data(hour_alarm, 	 rtc_ptr->alarm_data.hour);
+	rtc_transmit_data(hour_alarm, 	 rtc_ptr->alarm_data.minute);
 
 
 
