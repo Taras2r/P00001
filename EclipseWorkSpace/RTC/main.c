@@ -10,7 +10,8 @@
 #include "UART.h"
 
 /**************READ**WRITE**MODES**DEFINITION****************************/
- #define R_W   	7//Must be set to 1 when register is read
+#define R_W   	7//Must be set to 1 when register is read
+//#define DEBUG  //uncomment the line for debugging
 
 /*************************************PCF2123 REGISTER BITS DEFINITION*********/
 /**************REG CONTROL_1***********************************************/
@@ -176,7 +177,7 @@ void rtc_handle_alarm(void)
 #ifdef DEBUG
 	send_message_to_UDR("Control 2 ", rtc_receive_data(control_2), 16);
 #endif
-	//set new alarm time
+	//set new alarm time in if is needed
 	//handle alarm
 }
 
@@ -218,10 +219,10 @@ void rtc_handle_interrupts(void)
 
 void rtc_adjust_clk(unsigned char offset_value)
 {
-	rtc_transmit_data(offset_register, offset_value);
+	rtc_transmit_data(offset_register, offset_value);// should be supplemented
 }
 
-void rtc_configure_alarms(unsigned char alarm_intr_flags)//first four bits should be set
+void rtc_configure_alarms(unsigned char alarm_intr_flags)//first four bits should be set according to needed type of alarm
 {
 	rtc_transmit_data(minute_alarm, (((alarm_intr_flags << 7) & (1 << AE_M)) | rtc_ptr->alarm_data.minute));
 	rtc_transmit_data(hour_alarm, (((alarm_intr_flags << 6) & (1 << AE_H)) | rtc_ptr->alarm_data.hour));
@@ -249,9 +250,10 @@ void rtc_set_alarm(unsigned char alarm_intr_flags)//first four bits should be se
 	SPI_put_into_buffer((((alarm_intr_flags << 4) & (1 << AE_W)) | rtc_ptr->alarm_data.weekday));
 }
 
-void rtc_set_countdown_timer(void)
+void rtc_set_countdown_timer(unsigned char clk_ctrl, unsigned char alarm_intr_flags, unsigned char freq_source_clk)
 {
-	;
+	rtc_transmit_data(timer_clkout, (((freq_source_clk << 5) & 0x60) | ((alarm_intr_flags >> 1) & (1 << TE)) | (clk_ctrl & (CTD1 << 1)) | (clk_ctrl & 1)));
+	rtc_transmit_data(countdown_timer, (rtc_ptr->ctrl_data.countdown));
 }
 // add external interrupt that will initiate data receiving
 
@@ -292,9 +294,10 @@ int main (void)
 	send_message_to_UDR("Minutes ", rtc_ptr->time_data.minutes, 16);
 	send_message_to_UDR("Hours ", rtc_ptr->time_data.hours, 16);
 
-	//PORTB |= 1;
-	while(1);
+	while(1)
+	{
+		;
+	}
+
 	return 0;
-	;
-	;
 }
