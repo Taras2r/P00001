@@ -173,7 +173,9 @@ unsigned char rtc_control_os_flag(void)
 void rtc_handle_alarm(void)
 {
 	rtc_transmit_data(control_2, ~(1 << AF));
-	/*DEBUG FUNC read control 2 and put it to uart buffer*/
+#ifdef DEBUG
+	send_message_to_UDR("Control 2 ", rtc_receive_data(control_2), 16);
+#endif
 	//set new alarm time
 	//handle alarm
 }
