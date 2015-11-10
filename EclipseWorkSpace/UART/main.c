@@ -60,20 +60,21 @@ void send_message_to_UDR(char * message, int integer)
 
 void init_integer_buff(void)
 {
-		buff = (char*) malloc(sizeof(int)*8+1);
-		if(buff == NULL)
+	buff = (char*) malloc(sizeof(int)*8+1);
+	if(buff == NULL)
+	{
+		char* error_message = "Malloc err.\n\r";
+		do
 		{
-			char* error_message = "Malloc err.\n\r";
-			do
-			{
-				put_char_to_udr(*error_message);
-			}while(*++error_message);
-		}
+			put_char_to_udr(*error_message);
+		}while(*++error_message);
+	}
 }
 
 int main(void) {
 	init_uart( );
 	init_integer_buff();
+
 	DDRB |= (1<<PB0);
 	while(buff != NULL)
 	{
