@@ -219,11 +219,6 @@ void rtc_adjust_clk(unsigned char offset_value)
 	rtc_transmit_data(offset_register, offset_value);
 }
 
-void rtc_set_alarm_time(unsigned char minute, unsigned char hour)
-{
-	;
-}
-
 void rtc_configure_alarms(unsigned char alarm_intr_flags)//first four bits should be set
 {
 	rtc_transmit_data(minute_alarm, (((alarm_intr_flags << 7) & (1 << AE_M)) | rtc_ptr->alarm_data.minute));
@@ -231,13 +226,30 @@ void rtc_configure_alarms(unsigned char alarm_intr_flags)//first four bits shoul
 	rtc_transmit_data(day_alarm, (((alarm_intr_flags << 5) & (1 << AE_D)) | rtc_ptr->alarm_data.day));
 	rtc_transmit_data(weekday_alarm, (((alarm_intr_flags << 4) & (1 << AE_W)) | rtc_ptr->alarm_data.weekday));
 }
-void rtc_configure_alarms(unsigned char alarm_intr_flags)//first four bits should be set
+
+void rtc_set_time(void)
+{
+	rtc_transmit_data(seconds,  rtc_ptr->time_data.seconds);
+	SPI_put_into_buffer(rtc_ptr->time_data.minutes);
+	SPI_put_into_buffer(rtc_ptr->time_data.hours);
+	SPI_put_into_buffer(rtc_ptr->time_data.days);
+	SPI_put_into_buffer(rtc_ptr->time_data.weekdays);
+	SPI_put_into_buffer(rtc_ptr->time_data.months);
+	SPI_put_into_buffer(rtc_ptr->time_data.years);
+
+}
+
+void rtc_set_alarm(unsigned char alarm_intr_flags)//first four bits should be set
 {
 	rtc_transmit_data(minute_alarm, (((alarm_intr_flags << 7) & (1 << AE_M)) | rtc_ptr->alarm_data.minute));
 	SPI_put_into_buffer((((alarm_intr_flags << 6) & (1 << AE_H)) | rtc_ptr->alarm_data.hour));
 	SPI_put_into_buffer((((alarm_intr_flags << 5) & (1 << AE_D)) | rtc_ptr->alarm_data.day));
 	SPI_put_into_buffer((((alarm_intr_flags << 4) & (1 << AE_W)) | rtc_ptr->alarm_data.weekday));
+}
 
+void rtc_set_countdown_timer(void)
+{
+	;
 }
 // add external interrupt that will initiate data receiving
 
