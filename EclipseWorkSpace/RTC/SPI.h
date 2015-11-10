@@ -50,8 +50,8 @@ void SPI_init(void)
 
 void SPI_put_into_buffer(unsigned char data)
 {
-	if(SPSR & (1 << SPIF))
-		SPDR = data;
+	while(!(SPSR & (1 << SPIF)));//if(SPSR & (1 << SPIF))
+	SPDR = data;
 }
 
 //WORNING: works only MSB_first mode
