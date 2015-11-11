@@ -134,6 +134,7 @@ typedef struct
 {
    unsigned char control;
    unsigned char countdown;
+   unsigned char clk_out_frq;
 }pcf2123_ctrl;
 
 struct
@@ -250,11 +251,25 @@ void rtc_set_alarm(unsigned char alarm_intr_flags)//first four bits should be se
 	SPI_put_into_buffer((((alarm_intr_flags << 4) & (1 << AE_W)) | rtc_ptr->alarm_data.weekday));
 }
 
-void rtc_set_countdown_timer(unsigned char clk_ctrl, unsigned char alarm_intr_flags, unsigned char freq_source_clk)
+unsigned char rtc_ctrl_clkout(unsigned char clk_out_frq)
 {
-	rtc_transmit_data(timer_clkout, (((freq_source_clk << 5) & 0x60) | ((alarm_intr_flags >> 1) & (1 << TE)) | (clk_ctrl & (CTD1 << 1)) | (clk_ctrl & 1)));
+	/*freq_source_clk  = 0b111 - high-Z
+	 * freq_source_clk = 0b110 - 1
+	 * freq_source_clk = 0b101 - 1024
+	 * freq_source_clk = 0b100 - 2048
+	 * freq_source_clk = 0b011 - 4096
+	 * freq_source_clk = 0b010 - 8192
+	 * freq_source_clk = 0b001 - 16384
+	 * freq_source_clk = 0b000 - 32768*/
+	return (clk_out_frq & (1 << COF2 | 1 << COF1 | 1 << COF0));
+}
+
+void rtc_set_countdown_timer(unsigned char alarm_intr_flags, unsigned char clk_ctrl)
+{
+	rtc_transmit_data(timer_clkout, (rtc_ctrl_clkout( rtc->ctrl_data.clk_out_frq) | ((alarm_intr_flags >> 1) & (1 << TE)) | (clk_ctrl & (1 << CTD1)) | (clk_ctrl & (1 << CTD0))));
 	rtc_transmit_data(countdown_timer, (rtc_ptr->ctrl_data.countdown));
 }
+
 // add external interrupt that will initiate data receiving
 
 int main (void)
